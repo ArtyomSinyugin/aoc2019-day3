@@ -1,6 +1,6 @@
 use std::str::FromStr;
 
-#[derive(PartialEq)]
+#[derive(PartialEq)] 
 #[derive(Debug)]
 pub struct Wire { 
     steps: i32,
@@ -112,7 +112,7 @@ fn set_coordinates (direction: &Wire, xy_at_the_end_of_vector: (i32, i32)) -> Ve
 }
 
 
-pub async fn find_coordinates (v: Vec<Wire>) -> Vec<(i32, i32)> {
+pub fn find_coordinates (v: Vec<Wire>) -> Vec<(i32, i32)> {
     let mut found_coordinates = vec![(0,0),];
 
     for i in 0..v.len() {
@@ -200,3 +200,91 @@ mod tests {
     }
 }
 
+/* решение задачи в асинхронности
+pub fn closest_intersection (crossing_coordinates: Vec<(i32, i32)>) -> i32 {
+    let mut answer = crossing_coordinates[0].0.abs() + crossing_coordinates[0].1.abs();
+
+    for i in 0..crossing_coordinates.len() {
+    
+        let (x, y) = crossing_coordinates[i];
+
+        if answer > x.abs() + y.abs() {
+            answer = x.abs() + y.abs();
+        }
+    }
+    answer
+}
+
+pub async fn match_coordinates (wire_1: Vec<(i32, i32)>, wire_2: Vec<(i32, i32)>) -> Vec<(i32, i32)> {
+    let mut x = Vec::new();
+    println!("find_coordinates");
+    'outer: for i in 0..wire_1.len() {
+        if wire_1.get(i) == None {
+            break;
+        } else {
+            for j in 0..wire_2.len () {
+                if wire_1.get(i) == wire_2.get(j) {
+                    if wire_2.get(j) == None {
+                        break 'outer;
+                    }
+                    x.push(wire_1[i]);
+                }
+            }
+        }
+    }
+    x
+}
+
+async fn set_coordinates (direction: &Wire, xy_at_the_end_of_vector: (i32, i32)) -> Vec<(i32, i32)> {          // в функцию надо передать последние элементы вектора
+    //println!("set_coordinates");
+    let (x, y) = xy_at_the_end_of_vector;
+    match direction {
+        Wire { steps, dir: Dir::D } => {
+            //Vec::new();
+            let vec = (1..=*steps)
+                    .map(|step| (x, y - step))
+                    .collect();
+            vec
+        },
+        Wire { steps, dir: Dir::U } => {
+            let vec = (1..=*steps)
+                    .map(|step| (x, y + step))
+                    .collect();
+            vec
+        },
+        Wire { steps, dir: Dir::L } => {
+            let vec = (1..=*steps)
+                    .map(|step| (x - step, y))
+                    .collect();
+            vec
+        },
+        Wire { steps, dir: Dir::R } => {
+            let vec = (1..=*steps)
+                    .map(|step| (x + step, y))
+                    .collect();
+            vec
+        },
+    }
+}
+
+
+pub async fn find_coordinates (v: Vec<Wire>) -> Vec<(i32, i32)> {
+    println!("find_coordinates");
+    let mut found_coordinates = vec![(0,0),];
+
+    for i in 0..v.len() {
+        let xy = found_coordinates[found_coordinates.len()-1];
+        let mut vec = set_coordinates(v.get(i).unwrap(), xy).await;
+        found_coordinates.append(&mut vec);
+    }
+
+    found_coordinates
+}
+
+pub fn string_to_wire (wire: &str) -> Wire {
+
+    let wire: Wire = wire.parse().unwrap();
+
+    wire
+}
+*/
